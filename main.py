@@ -8,7 +8,7 @@ p1 = player()
 
 pygame.init()
 pygame.display.set_caption("BlockPusher")
-screen = pygame.display.set_mode((600,600))
+screen = pygame.display.set_mode((800,800))
 clock = pygame.time.Clock()
 
 def main():
@@ -28,7 +28,9 @@ def main():
         
         #physics---------------------------------------------------
 
+        p1.move(keys)
 
+        #Render section
         
         screen.fill((0, 0, 0))
 
