@@ -9,15 +9,15 @@ class player:
     
     def move(self, keys_pressed):
         if keys_pressed[pygame.K_LEFT]:
-            self.vx = -.1
+            self.vx = -1
         elif keys_pressed[pygame.K_RIGHT]:
-            self.vx = .1
+            self.vx = 1
         else:
             self.vx = 0
         if keys_pressed[pygame.K_UP]:
-            self.vy = -.1
+            self.vy = -1
         elif keys_pressed[pygame.K_DOWN]:
-            self.vy = .1
+            self.vy = 1
         else:
             self.vy = 0
 
