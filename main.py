@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 import sys
 from Player import player
 
@@ -7,6 +8,10 @@ pygame.display.set_caption("BlockPusher")
 screen = pygame.display.set_mode((800,800))
 clock = pygame.time.Clock()
 
+mixer.init()
+
+Music = pygame.mixer.Sound("WadeInTheWater.mp3")
+
 #classes and class arguments
 player_pos = pygame.Vector2(400, 400)
 player_size = pygame.Vector2(50, 50)
@@ -14,15 +19,17 @@ player_size = pygame.Vector2(50, 50)
 p1 = player(player_pos, player_size)
 
 
+
 StartButton = pygame.Rect(325, 350, 200, 100)
-HouseEntrance = pygame.Rect(100, 0, 600, 200)
+HouseEntrance = pygame.Rect(362, 114, 52, 86)
+HouseBorder = pygame.Rect(100, 0, 600, 200)
 BedroomExit = pygame.Rect(770, 700, 100, 100)
-BookShelf = pygame.Rect(0, 40, 100, 150)
+Table = pygame.Rect(0, 40, 100, 150)
 ExitShelf = pygame.Rect(730, 50, 50, 50)
 DialougeBox = pygame.Rect(100, 600, 500, 150)
-RiverBox = pygame.Rect(300, 0, 200, 50)
-ForestExit = pygame.Rect(700, 80, 100, 200)
-Train = pygame.Rect(0, 200, 650, 200)
+RiverBox = pygame.Rect(260, 0, 150, 20)
+ForestExit = pygame.Rect(775, 265, 40, 100)
+Train = pygame.Rect(150, 0, 520, 250)
 
 BROWN = (234, 165, 108)
 WHITE = (255, 255, 255)
@@ -33,6 +40,17 @@ GREEN = (115, 255, 122)
 #mouse_still = False
 
 def main():
+
+    House = pygame.image.load("EngUnessayHouse.png")
+    Bedroom = pygame.image.load("KidBedroom.png")
+    TableTop = pygame.image.load("TableTop.png")
+    Narrative = pygame.image.load("Narrative.png")
+    Forest1 = pygame.image.load("Forest1.png")
+    Forest2 = pygame.image.load("Forest2.png")
+    TrainStation = pygame.image.load("TrainStation.png")
+    Ticket = pygame.image.load("Ticket.png")
+    
+    HasBeenPlayed = False
 
     #variables
     State = 1
@@ -66,7 +84,7 @@ def main():
                 elif State == 9:
                     TextCounter += 1
 
-        print(TextCounter)
+        #print(TextCounter)
 
 
 
@@ -105,16 +123,15 @@ def main():
         if State == 2:
             screen.fill(BROWN)
 
-            #fields
-            pygame.draw.rect(screen, (WHITE), (0, 500, 300, 300))
-            pygame.draw.rect(screen, (WHITE), (500, 500, 300, 300))
-
-            #house
-            pygame.draw.rect(screen, (GREEN), (0, 0, 800, 300))
-            pygame.draw.rect(screen, (BLUE), (100, 0, 600, 200))
-            pygame.draw.line(screen, (BROWN), (0, 280), (50, 280), 10)
-            pygame.draw.line(screen, (BROWN), (150, 280), (800, 280), 10)
-
+            screen.blit(House, (0,0))
+            print(p1.vx, p1.vy)
+            if HouseBorder.colliderect(PlayerRect):
+                if p1.pos.x + 50 > 100 and p1.pos.x + 50 < 105:
+                    p1.pos.x = 50
+                if p1.pos.x < 700 and p1.pos.x > 695:
+                    p1.pos.x = 700
+                if p1.pos.y < 200 and p1.pos.x+50 > 100 and p1.pos.x < 700:
+                    p1.pos.y = 200
             if HouseEntrance.colliderect(PlayerRect):
                 State = 3
             
@@ -124,18 +141,16 @@ def main():
         if State == 3:
             screen.fill(BLUE)
 
-            pygame.draw.circle(screen, (200, 20, 20), (400, 400), 200)
-            pygame.draw.rect(screen, (BROWN), (770, 700, 100, 100))
-            pygame.draw.rect(screen, (101, 67, 33), (0, 40, 100, 150))
+            screen.blit(Bedroom, (0,0))
 
-            if BookShelf.collidepoint(mouseX, mouseY):
-                pygame.draw.rect(screen, (255,255,255), (35, 50, 100, 50))
+            if Table.collidepoint(mouseX, mouseY):
+                pygame.draw.rect(screen, (255,255,255), (35, 130, 100, 50))
+
                 if MouseDown:
                     searching = True
 
             if searching == True:
-                pygame.draw.rect(screen, (101, 67, 33), (0, 0, 800, 800))
-                pygame.draw.rect(screen, (200, 10, 10), (730, 50, 50, 50))
+                screen.blit(TableTop, (0,0))
                 if ExitShelf.collidepoint(mouseX, mouseY) and MouseDown:
                     searching = False
 
@@ -150,15 +165,7 @@ def main():
         if State == 4:
             screen.fill(BROWN)
 
-            #fields
-            pygame.draw.rect(screen, (GREEN), (0, 500, 300, 300))
-            pygame.draw.rect(screen, (GREEN), (500, 500, 300, 300))
-
-            #house
-            pygame.draw.rect(screen, (GREEN), (0, 0, 800, 300))
-            pygame.draw.rect(screen, (BLUE), (100, 0, 600, 200))
-            pygame.draw.line(screen, (BROWN), (0, 280), (50, 280), 10)
-            pygame.draw.line(screen, (BROWN), (150, 280), (800, 280), 10)
+            screen.blit(House, (0,0))
 
             #People
             pygame.draw.rect(screen, (WHITE), (430, 420, 50, 50))
@@ -169,19 +176,19 @@ def main():
             pygame.draw.rect(screen, (BLACK), (95, 595, 655, 155), 5)
 
             if TextCounter == 1:
-                draw_text("Massa:", text_font, (BLACK), 120, 630)
-                draw_text("Did I just catch you comin' out of our home, n***r?", text_font, (BLACK), 120, 670)
+                draw_text("Owner:", text_font, (BLACK), 120, 630)
+                draw_text("Did I just catch you comin' out of our home, negro?", text_font, (BLACK), 120, 670)
             elif TextCounter == 2:
-                draw_text("Massa:", text_font, (BLACK), 120, 630)
+                draw_text("Owner:", text_font, (BLACK), 120, 630)
                 draw_text("What the f**k do you think y'er doin'?", text_font, (BLACK), 120, 670)
             elif TextCounter == 3:
-                draw_text("Massa:", text_font, (BLACK), 120, 630)
+                draw_text("Owner:", text_font, (BLACK), 120, 630)
                 draw_text("That's it, I'm sendin' ya to the Slave Breaker.", text_font, (BLACK), 120, 670)
             elif TextCounter == 4:
-                draw_text("Massa:", text_font, (BLACK), 120, 630)
+                draw_text("Owner:", text_font, (BLACK), 120, 630)
                 draw_text("Honey, go inside and write a letter to Edward Covey.", text_font, (BLACK), 120, 670)
             elif TextCounter == 5:
-                draw_text("Massa:", text_font, (BLACK), 120, 630)
+                draw_text("Owner:", text_font, (BLACK), 120, 630)
                 draw_text("After a visit with him, you gon' learn to behave", text_font, (BLACK), 120, 670)
                 draw_text("yourself, damn dirty negro.", text_font, (BLACK), 120, 700)
             elif TextCounter == 6:
@@ -192,6 +199,8 @@ def main():
             screen.fill(WHITE)
 
             pygame.draw.line(screen, (BLACK), (0, 400), (800, 400), 20)
+
+            screen.blit(Narrative, (0,0))
 
             draw_text("Narrator:", text_font, (BLACK), 20, 420)
             
@@ -220,18 +229,25 @@ def main():
         if State == 6:
             screen.fill(GREEN)
 
-            pygame.draw.rect(screen, (BLUE), (300, 0, 200, 300))
+            if HasBeenPlayed == False:
+                HasBeenPlayed = True
+                Music.play()
+                Music.set_volume(0.5)
+
+
             if RiverBox.colliderect(PlayerRect):
                 State = 7
                 p1.pos.x = 400
                 p1.pos.y = 720
+
+            screen.blit(Forest1, (0,0))
 
             p1.draw(screen)
 
         if State == 7:
             screen.fill(GREEN)
 
-            pygame.draw.rect(screen, (BLUE), (300, 300, 200, 800))
+            screen.blit(Forest2, (0,0))
 
             if ForestExit.colliderect(PlayerRect):
                 p1.pos.x = 20
@@ -244,7 +260,7 @@ def main():
             screen.fill((192,192,192))
 
 
-            pygame.draw.rect(screen, (0, 0, 0), (0, 200, 650, 200))
+            screen.blit(TrainStation, (0,0))
 
             if Train.colliderect(PlayerRect):
                 State = 9
@@ -253,6 +269,8 @@ def main():
 
         if State == 9:
             screen.fill(WHITE)
+
+            screen.blit(Ticket, (0,0))
 
 
             pygame.draw.line(screen, (BLACK), (0, 400), (800, 400), 20)
@@ -266,6 +284,8 @@ def main():
             elif TextCounter == 15:
                 draw_text("Narrator:", text_font, (BLACK), 20, 420)
                 draw_text("THE END", text_font,(BLACK), 20, 460)
+            elif TextCounter == 16:
+                running = False
 
 
             
